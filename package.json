@@ -1,0 +1,46 @@
+{
+  "name": "local-rss-engine",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --hostname 127.0.0.1",
+    "build": "next build",
+    "start": "next start --hostname 127.0.0.1",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test --test-concurrency=1 tests/*.test.ts",
+    "fixtures": "tsx tests/fixtures/server.ts",
+    "smoke": "node scripts/smoke.mjs",
+    "tunnel": "node --env-file-if-exists=.env.local --import tsx scripts/tunnel.ts",
+    "tunnel:ngrok": "node --env-file-if-exists=.env.local --import tsx scripts/tunnel.ts --provider ngrok",
+    "tunnel:named": "node --env-file-if-exists=.env.local --import tsx scripts/tunnel.ts --provider named",
+    "tunnel:install": "node scripts/install-cloudflared.mjs",
+    "test:public": "node --import tsx scripts/test-public.ts",
+    "smoke:tunnel": "node scripts/smoke-tunnel.mjs",
+    "smoke:watch": "node scripts/smoke-watch.mjs",
+    "feeds:build": "node --import tsx scripts/feeds.ts build",
+    "feeds:validate": "node --import tsx scripts/feeds.ts validate",
+    "feeds:export": "node --import tsx scripts/feeds.ts export",
+    "feeds:seed": "node --import tsx scripts/feeds.ts seed",
+    "feeds:key": "node --import tsx scripts/feeds.ts key"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "dependencies": {
+    "cheerio": "1.2.0",
+    "domhandler": "5.0.3",
+    "fast-xml-parser": "5.11.1",
+    "ipaddr.js": "2.5.0",
+    "next": "16.3.6",
+    "playwright": "1.63.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "24.13.6",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3"
+  }
+}

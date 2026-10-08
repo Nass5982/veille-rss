@@ -1,0 +1,21 @@
+import { createHash } from "node:crypto";
+import { mkdirSync, writeFileSync, chmodSync } from "node:fs";
+import { join } from "node:path";
+
+const arch = process.arch === "x64" ? "amd64" : process.arch === "arm64" ? "arm64" : "";
+if (!arch || !["win32", "linux"].includes(process.platform)) throw new Error("Installez cloudflared avec le gestionnaire système (macOS : brew install cloudflared). Voir README.");
+const name = `cloudflared-${process.platform === "win32" ? "windows" : "linux"}-${arch}${process.platform === "win32" ? ".exe" : ""}`;
+const response = await fetch("https://api.github.com/repos/cloudflare/cloudflared/releases/latest", { signal: AbortSignal.timeout(30_000) });
+if (!response.ok) throw new Error(`GitHub répond HTTP ${response.status}.`);
+const release = await response.json();
+const asset = release.assets?.find(a => a.name === name);
+if (!asset?.digest?.startsWith("sha256:")) throw new Error("Binaire ou empreinte SHA-256 absents de la publication officielle. Utilisez l’installation manuelle documentée.");
+console.log(`Téléchargement officiel : Cloudflare ${release.tag_name} / ${name}`);
+const binary = await fetch(asset.browser_download_url, { signal: AbortSignal.timeout(120_000) });
+if (!binary.ok) throw new Error(`Téléchargement : HTTP ${binary.status}.`);
+const bytes = Buffer.from(await binary.arrayBuffer());
+if (`sha256:${createHash("sha256").update(bytes).digest("hex")}` !== asset.digest) throw new Error("L’empreinte du téléchargement ne correspond pas. Installation refusée.");
+mkdirSync(".tools", { recursive: true });
+const path = join(".tools", process.platform === "win32" ? "cloudflared.exe" : "cloudflared");
+writeFileSync(path, bytes); if (process.platform !== "win32") chmodSync(path, 0o755);
+console.log(`Installé dans ${path}, empreinte SHA-256 vérifiée. Lancez npm run tunnel.`);

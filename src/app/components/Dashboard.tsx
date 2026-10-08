@@ -1,0 +1,10 @@
+"use client";
+import type { Analysis } from "@/lib/types";
+import type { FeedState } from "@/lib/store";
+import { useState } from "react";
+import { when } from "./FeedManager";
+export default function Dashboard({rows}:{rows:{feed:Analysis;state:FeedState}[]}) {
+ const [message,setMessage]=useState("");
+ async function act(id:string,action:string){if(action==="delete"&&!confirm("Supprimer ce flux et son historique ?"))return;try{if(action==="copy"){await navigator.clipboard.writeText(new URL(`/feed/${id}`,location.origin).href);setMessage("URL locale copiée. Utilisez la page du flux pour copier son URL publique.");return;}const r=await fetch(`/api/manage/${id}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action})});const d=await r.json();if(!r.ok)throw new Error(d.message);location.href=d.id?`/feeds/${d.id}`:action==="refresh"?`/feeds/${id}`:"/feeds";}catch(e){setMessage(String(e));}}
+ return <section className="panel"><p role="status">{message}</p><div className="table-scroll"><table><thead><tr>{["Nom / Site","Méthode","Articles","Nouveaux","Dernière actualisation","Prochaine","Statut","Actions"].map(t=><th key={t}>{t}</th>)}</tr></thead><tbody>{rows.map(({feed:f,state:s})=><tr key={f.id}><td><a href={`/feeds/${f.id}`}>{f.title}</a><br/>{new URL(f.url).hostname}</td><td>{f.method.toUpperCase()}</td><td>{f.items.length}</td><td>{s.newItems}</td><td>{when(s.lastRunAt)}</td><td>{when(s.nextRunAt)}</td><td>{s.status}</td><td><details><summary>Actions</summary><div className="actions"><a href={`/feeds/${f.id}`}>Ouvrir</a><a href={`/feeds/${f.id}/edit`}>Modifier extraction</a><a href={`/feeds/${f.id}#diagnostic`}>Diagnostic</a><a href={`/feeds/${f.id}/history`}>Historique</a>{[["copy","Copier URL RSS"],["refresh","Actualiser maintenant"],["duplicate","Dupliquer"],["toggle",s.enabled?"Désactiver":"Activer"],["delete","Supprimer"]].map(([a,t])=><button key={a} onClick={()=>act(f.id,a)}>{t}</button>)}</div></details></td></tr>)}</tbody></table></div>{!rows.length&&<p>Aucun flux créé. <a href="/">Analyser une URL</a>.</p>}</section>;
+}

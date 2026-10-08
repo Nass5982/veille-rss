@@ -1,0 +1,88 @@
+name: Publier les flux RSS
+on:
+  workflow_dispatch:
+    inputs:
+      initialize_state:
+        description: "Première exécution uniquement : créer la branche d’état si elle n’existe pas"
+        required: false
+        type: boolean
+        default: false
+  schedule:
+    - cron: '17 */3 * * *'
+
+# No PR trigger: untrusted pull requests must never receive the state key.
+permissions: {}
+concurrency:
+  group: rss-pages-production
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: write # Required only to persist encrypted state on rss-state.
+      pages: read
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      NODE_OPTIONS: --max-old-space-size=3072
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - name: Installer Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - name: Dépendances verrouillées
+        run: npm ci
+        timeout-minutes: 5
+      - name: Chromium et dépendances Linux
+        run: npx --no-install playwright install --with-deps chromium
+        timeout-minutes: 5
+      - name: Lire les paramètres Pages
+        id: pages
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
+      - name: Restaurer l’état durable chiffré
+        run: node --import tsx scripts/github-state.ts pull
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RSS_STATE_KEY: ${{ secrets.RSS_STATE_KEY }}
+          RSS_INITIALIZE_STATE: ${{ inputs.initialize_state == true && 'true' || 'false' }}
+      - name: Générer les flux sans Next.js
+        run: npm run feeds:build -- --state .rss-state/state.enc
+        timeout-minutes: 21
+        env:
+          RSS_STATE_KEY: ${{ secrets.RSS_STATE_KEY }}
+          RSS_PUBLIC_BASE_URL: ${{ steps.pages.outputs.base_url }}
+      - name: Contrôler les XML et la liste des fichiers publics
+        run: npm run feeds:validate
+        env:
+          RSS_PUBLIC_BASE_URL: ${{ steps.pages.outputs.base_url }}
+      - name: Sauvegarder l’état avant publication
+        run: node --import tsx scripts/github-state.ts push
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - name: Préparer uniquement le site RSS statique
+        uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
+        with:
+          path: public-rss
+          retention-days: 1
+          include-hidden-files: true # Only .nojekyll; validated allowlist above.
+  deploy:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Déployer les fichiers XML
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4

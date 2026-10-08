@@ -1,0 +1,19 @@
+{
+  "format": "source-rss",
+  "version": 1,
+  "feeds": [
+    {
+      "id": "bbc-news",
+      "title": "BBC News — exemple public",
+      "url": "https://feeds.bbci.co.uk/news/rss.xml",
+      "settings": {
+        "method": "rss"
+      },
+      "watch": {},
+      "publication": {
+        "slug": "bbc-news",
+        "publish": true
+      }
+    }
+  ]
+}
