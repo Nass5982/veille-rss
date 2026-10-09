@@ -3,6 +3,54 @@
   "version": 1,
   "feeds": [
     {
+      "id": "8a64bc77-f06b-46e5-9273-c62203d45e93",
+      "title": "Direction de la recherche, des études, de l'évaluation et des statistiques - Statistique publique de la santé et des solidarités",
+      "url": "https://drees.solidarites-sante.gouv.fr/recherche?f%5B0%5D=content_type%3A1",
+      "settings": {
+        "method": "auto",
+        "javascript": true,
+        "pagination": false,
+        "maxPages": 1,
+        "scroll": false,
+        "maxScrolls": 10,
+        "maxClicks": 10,
+        "scrollDurationMs": 30000,
+        "maxArticles": 200,
+        "timeoutMs": 10000,
+        "userAgent": "LocalRSS/0.2 (+local feed reader)",
+        "language": "fr-FR",
+        "timezone": "Europe/Paris",
+        "refreshMinutes": 0,
+        "autoReanalyze": true
+      },
+      "watch": {
+        "kind": "source",
+        "sourceIds": [],
+        "filter": {
+          "type": "group",
+          "operator": "and",
+          "children": []
+        },
+        "transformations": [],
+        "sort": "newest",
+        "dedup": {
+          "level": "url",
+          "threshold": 85,
+          "dateHours": 72,
+          "keep": "first",
+          "priorities": []
+        },
+        "folder": "",
+        "tags": [],
+        "favorite": false,
+        "updatedAt": "2000-01-01T00:00:00.000Z"
+      },
+      "publication": {
+        "slug": "8a64bc77-f06b-46e5-9273-c62203d45e93",
+        "publish": true
+      }
+    },
+    {
       "id": "976818a3-86f3-4652-bb19-2a50bdb82644",
       "title": "Social : actualités, analyses et vidéos - Les Echos",
       "url": "https://www.lesechos.fr/economie-france/social/",
