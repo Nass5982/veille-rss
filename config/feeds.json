@@ -3,6 +3,54 @@
   "version": 1,
   "feeds": [
     {
+      "id": "976818a3-86f3-4652-bb19-2a50bdb82644",
+      "title": "Social : actualités, analyses et vidéos - Les Echos",
+      "url": "https://www.lesechos.fr/economie-france/social/",
+      "settings": {
+        "method": "auto",
+        "javascript": true,
+        "pagination": false,
+        "maxPages": 1,
+        "scroll": false,
+        "maxScrolls": 10,
+        "maxClicks": 10,
+        "scrollDurationMs": 30000,
+        "maxArticles": 200,
+        "timeoutMs": 10000,
+        "userAgent": "LocalRSS/0.2 (+local feed reader)",
+        "language": "fr-FR",
+        "timezone": "Europe/Paris",
+        "refreshMinutes": 0,
+        "autoReanalyze": true
+      },
+      "watch": {
+        "kind": "source",
+        "sourceIds": [],
+        "filter": {
+          "type": "group",
+          "operator": "and",
+          "children": []
+        },
+        "transformations": [],
+        "sort": "newest",
+        "dedup": {
+          "level": "url",
+          "threshold": 85,
+          "dateHours": 72,
+          "keep": "first",
+          "priorities": []
+        },
+        "folder": "",
+        "tags": [],
+        "favorite": false,
+        "updatedAt": "2000-01-01T00:00:00.000Z"
+      },
+      "publication": {
+        "slug": "976818a3-86f3-4652-bb19-2a50bdb82644",
+        "publish": true
+      }
+    },
+    {
       "id": "1e51469c-6559-47c1-8dc4-130beeb6d548",
       "title": "Activité professionnelle vétérinaire | Le Point Vétérinaire",
       "url": "https://www.lepointveterinaire.fr/veterinaire/activite-pro/",
@@ -95,56 +143,6 @@
       },
       "publication": {
         "slug": "58c4c487-6f5d-4b73-b8a2-af45af38f2ba",
-        "publish": true
-      }
-    },
-    {
-      "id": "5785ca67-8a91-4a16-86dc-80cc39fdf2ff",
-      "title": "Nouvelle veille",
-      "url": "https://www.newsassurancespro.com/flux-actualites",
-      "settings": {
-        "method": "auto",
-        "javascript": true,
-        "pagination": false,
-        "maxPages": 1,
-        "scroll": false,
-        "maxScrolls": 10,
-        "maxClicks": 10,
-        "scrollDurationMs": 30000,
-        "maxArticles": 200,
-        "timeoutMs": 10000,
-        "userAgent": "LocalRSS/0.2 (+local feed reader)",
-        "language": "fr-FR",
-        "timezone": "Europe/Paris",
-        "refreshMinutes": 0,
-        "autoReanalyze": true
-      },
-      "watch": {
-        "kind": "derived",
-        "sourceIds": [
-          "48c97b7e-d2db-4dba-8824-b0e12a491210"
-        ],
-        "filter": {
-          "type": "group",
-          "operator": "and",
-          "children": []
-        },
-        "transformations": [],
-        "sort": "newest",
-        "dedup": {
-          "level": "url",
-          "threshold": 85,
-          "dateHours": 72,
-          "keep": "first",
-          "priorities": []
-        },
-        "folder": "",
-        "tags": [],
-        "favorite": false,
-        "updatedAt": "2026-09-27T16:40:55.164Z"
-      },
-      "publication": {
-        "slug": "5785ca67-8a91-4a16-86dc-80cc39fdf2ff",
         "publish": true
       }
     },
